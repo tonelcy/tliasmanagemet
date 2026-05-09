@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lcy.mapper.ClazzMapper">
+    <select id="list" resultType="com.lcy.pojo.Clazz">
+        select c.*, col.name as college_name
+        from clazz c
+        left join college col on c.college_id = col.id
+        <where>
+            <if test="name != null and name != ''">
+                and c.name like concat('%', #{name}, '%')
+            </if>
+            <if test="collegeId != null">
+                and c.college_id = #{collegeId}
+            </if>
+            <if test="begin != null and end != null">
+                and c.create_time between #{begin} and #{end}
+            </if>
+        </where>
+        order by c.create_time desc
+    </select>
+
+    <update id="update">
+        update clazz
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="room != null">room = #{room},</if>
+            <if test="collegeId != null">college_id = #{collegeId},</if>
+            <if test="headTeacherId != null">head_teacher_id = #{headTeacherId},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteByIds">
+        delete from clazz where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

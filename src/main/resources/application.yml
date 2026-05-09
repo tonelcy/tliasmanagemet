@@ -1,0 +1,63 @@
+#springboot配置
+spring:
+  application:
+    name: tlias-web-management
+  #mysql连接配置
+  datasource:
+    url: jdbc:mysql://localhost:3306/tlias
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 1234
+  #Redis配置
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    database: 0
+    timeout: 10000ms
+    lettuce:
+      pool:
+        max-active: 20
+        max-wait: -1ms
+        max-idle: 10
+        min-idle: 5
+  #RabbitMQ配置
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    listener:
+      simple:
+        prefetch: 1
+        acknowledge-mode: manual
+        concurrency: 3
+        max-concurrency: 10
+  #Spring Cache配置
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000ms
+      cache-null-values: false
+#mybatis配置
+mybatis:
+  configuration:
+    #打印sql
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    #驼峰命名
+    #如果字段名与属性名符合驼峰命名规则，mybatis会自动通过驼峰命名规则映射。驼峰命名规则：   abc_xyz    =>   abcXyz
+    #- 表中字段名：abc_xyz
+    #- 类中属性名：abcXyz
+    map-underscore-to-camel-case: true
+pagehelper:
+  reasonable: true
+  helper-dialect: mysql
+#阿里云OSS
+aliyun:
+  oss:
+    endpoint: https://oss-cn-beijing.aliyuncs.com
+    bucketName: javaweb1-ai-01
+    region: cn-beijing

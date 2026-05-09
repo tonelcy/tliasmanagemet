@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lcy.mapper.StudentMapper">
+    <select id="list" resultType="com.lcy.pojo.Student">
+        select s.*, c.name as clazz_name, col.name as college_name
+        from student s
+        left join clazz c on s.clazz_id = c.id
+        left join college col on s.college_id = col.id
+        <where>
+            <if test="name != null and name != ''">
+                and s.name like concat('%', #{name}, '%')
+            </if>
+            <if test="clazzId != null">
+                and s.clazz_id = #{clazzId}
+            </if>
+            <if test="collegeId != null">
+                and s.college_id = #{collegeId}
+            </if>
+            <if test="degree != null">
+                and s.degree = #{degree}
+            </if>
+            <if test="begin != null and end != null">
+                and s.create_time between #{begin} and #{end}
+            </if>
+        </where>
+        order by s.create_time desc
+    </select>
+
+    <update id="update">
+        update student
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="no != null">no = #{no},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="clazzId != null">clazz_id = #{clazzId},</if>
+            <if test="collegeId != null">college_id = #{collegeId},</if>
+            <if test="degree != null">degree = #{degree},</if>
+            <if test="admissionDate != null">admission_date = #{admissionDate},</if>
+            <if test="image != null">image = #{image},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteByIds">
+        delete from student where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="countStudentGender" resultType="java.util.Map">
+        select
+            if(gender = 1, '男', '女') as name,
+            count(*) as value
+        from student
+        group by gender
+    </select>
+
+    <select id="countStudentDegree" resultType="java.util.Map">
+        select
+            case degree
+                when 1 then '专科'
+                when 2 then '本科'
+                when 3 then '硕士'
+                when 4 then '博士'
+                else '其他'
+            end as name,
+            count(*) as value
+        from student
+        group by degree
+    </select>
+
+    <select id="countStudentByCollege" resultType="java.util.Map">
+        select
+            col.name as name,
+            count(*) as value
+        from student s
+        left join college col on s.college_id = col.id
+        group by col.id, col.name
+    </select>
+
+    <select id="countStudentByClazz" resultType="java.util.Map">
+        select
+            c.name as name,
+            count(*) as value
+        from student s
+        left join clazz c on s.clazz_id = c.id
+        group by c.id, c.name
+    </select>
+</mapper>
