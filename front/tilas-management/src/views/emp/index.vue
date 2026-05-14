@@ -240,7 +240,7 @@ const deleteById = (id) => {
     ElMessageBox.confirm('您确认删除该员工吗?', '提示',
         { confirmButtonText: '确认', cancelButtonText: '取消', type: 'warning' }
     ).then(async () => { //确认
-        const result = await deleteApi(id);
+        const result = await deleteApi([id]);
         if (result.code === 1) {
             ElMessage.success('删除成功');
             search();

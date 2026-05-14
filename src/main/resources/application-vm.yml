@@ -1,27 +1,26 @@
 # 虚拟机环境配置
-# 请修改下面的IP地址为您虚拟机的实际IP地址
 
 #springboot配置
 spring:
   #Redis配置 - 虚拟机
   redis:
-    host:  192.168.88.129        # 虚拟机的IP地址
+    host: 192.168.88.129        # 虚拟机的IP地址
     port: 6379
     password: 123456            # Redis设置的密码
     database: 0
     timeout: 10000ms
     lettuce:
       pool:
-        max-active: 20
-        max-wait: -1ms
-        max-idle: 10
+        max-active: 50          # 最大连接数（提升用于高并发）
+        max-wait: 3000ms
+        max-idle: 15
         min-idle: 5
   #RabbitMQ配置 - 虚拟机
   rabbitmq:
     host: 192.168.88.129        # 虚拟机的IP地址
     port: 5672
-    username: guest
-    password: guest
+    username: admin
+    password: 123456
     virtual-host: /
     publisher-confirm-type: correlated
     publisher-returns: true
@@ -31,3 +30,15 @@ spring:
         acknowledge-mode: manual
         concurrency: 3
         max-concurrency: 10
+
+# Redisson配置
+redisson:
+  single-server-config:
+    address: "redis://192.168.88.129:6379"
+    password: "123456"
+    database: 0
+    connection-minimum-idle-size: 10
+    connection-pool-size: 64
+    idle-connection-timeout: 10000
+    connect-timeout: 10000
+    timeout: 3000

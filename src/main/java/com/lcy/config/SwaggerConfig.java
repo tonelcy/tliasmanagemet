@@ -1,65 +1,48 @@
 package com.lcy.config;
 
-import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.oas.annotations.EnableOpenApi;
-import springfox.documentation.service.*;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spi.service.contexts.SecurityContext;
-import springfox.documentation.spring.web.plugins.Docket;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
- * Swagger 配置类
+ * SpringDoc OpenAPI 配置类（兼容 Spring Boot 2.6+）
+ *
+ * 说明：SpringDoc 是官方推荐的 OpenAPI 3.0 实现，完美兼容 Spring Boot 2.6+
+ * 访问地址：http://localhost:8080/swagger-ui.html
  */
 @Configuration
-@EnableOpenApi
-@EnableKnife4j
 public class SwaggerConfig {
 
     @Bean
-    public Docket createRestApi() {
-        return new Docket(DocumentationType.OAS_30)
-                .apiInfo(apiInfo())
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("com.lcy.controller"))
-                .paths(PathSelectors.any())
-                .build()
-                .securitySchemes(securitySchemes())
-                .securityContexts(securityContexts());
+    public OpenAPI createOpenAPI() {
+        return new OpenAPI()
+                // API 信息
+                .info(apiInfo())
+                // 安全认证配置（Token）
+                .addSecurityItem(new SecurityRequirement().addList("token"))
+                .components(new io.swagger.v3.oas.models.Components()
+                        .addSecuritySchemes("token",
+                                new SecurityScheme()
+                                        .type(SecurityScheme.Type.APIKEY)
+                                        .in(SecurityScheme.In.HEADER)
+                                        .name("token")));
     }
 
-    private ApiInfo apiInfo() {
-        return new ApiInfoBuilder()
+    private Info apiInfo() {
+        return new Info()
                 .title("Tlias 管理系统 API 文档")
-                .description("Tlias 管理系统接口文档")
-                .contact(new Contact("Tlias Team", "", ""))
+                .description("Tlias 管理系统接口文档 - 基于 SpringDoc OpenAPI 3.0")
                 .version("1.0.0")
-                .build();
-    }
-
-    private List<SecurityScheme> securitySchemes() {
-        ApiKey apiKey = new ApiKey("token", "token", "header");
-        return Collections.singletonList(apiKey);
-    }
-
-    private List<SecurityContext> securityContexts() {
-        SecurityContext securityContext = SecurityContext.builder()
-                .securityReferences(defaultAuth())
-                .build();
-        return Collections.singletonList(securityContext);
-    }
-
-    private List<SecurityReference> defaultAuth() {
-        AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
-        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
-        authorizationScopes[0] = authorizationScope;
-        return Collections.singletonList(new SecurityReference("token", authorizationScopes));
+                .contact(new Contact()
+                        .name("Tlias Team")
+                        .email(""))
+                .license(new License()
+                        .name("Apache 2.0")
+                        .url("https://www.apache.org/licenses/LICENSE-2.0"));
     }
 }

@@ -24,14 +24,14 @@ public class CollegeServiceImpl implements CollegeService {
     private CollegeMapper collegeMapper;
 
     @Override
-    @Cacheable(value = "college", key = "'all'")
+    @Cacheable(value = "college", key = "'list'")
     public List<College> list() {
         log.info("查询所有学院，从数据库获取");
         return collegeMapper.list();
     }
 
     @Override
-    @Cacheable(value = "college", key = "#id")
+    @Cacheable(value = "college", key = "'id:' + #id")
     public College getById(Integer id) {
         log.info("查询学院详情，从数据库获取: id={}", id);
         return collegeMapper.getById(id);
@@ -41,7 +41,7 @@ public class CollegeServiceImpl implements CollegeService {
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(value = "college", allEntries = true)
     public void save(College college) {
-        log.info("新增学院，清除缓存: {}", college);
+        log.info("新增学院: {}", college);
         college.setCreateTime(LocalDateTime.now());
         college.setUpdateTime(LocalDateTime.now());
         collegeMapper.insert(college);
@@ -51,7 +51,7 @@ public class CollegeServiceImpl implements CollegeService {
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(value = "college", allEntries = true)
     public void update(College college) {
-        log.info("更新学院，清除缓存: {}", college);
+        log.info("更新学院: {}", college);
         college.setUpdateTime(LocalDateTime.now());
         collegeMapper.update(college);
     }
@@ -60,7 +60,7 @@ public class CollegeServiceImpl implements CollegeService {
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(value = "college", allEntries = true)
     public void deleteById(Integer id) {
-        log.info("删除学院，清除缓存: id={}", id);
+        log.info("删除学院: id={}", id);
         collegeMapper.deleteById(id);
     }
 
@@ -68,7 +68,7 @@ public class CollegeServiceImpl implements CollegeService {
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(value = "college", allEntries = true)
     public void deleteByIds(List<Integer> ids) {
-        log.info("批量删除学院，清除缓存: ids={}", ids);
+        log.info("批量删除学院: ids={}", ids);
         collegeMapper.deleteByIds(ids);
     }
 

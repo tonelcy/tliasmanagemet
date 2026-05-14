@@ -75,9 +75,10 @@ public class ClazzController {
 
     /**
      * 删除
+     * 注意：调用方必须发送 DELETE 请求，Content-Type 为 application/json，body 为 JSON 数组，例如 [1,2,3]
      */
     @DeleteMapping
-    public Result delete(@RequestParam List<Integer> ids) {
+    public Result delete(@RequestBody List<Integer> ids) {
         log.info("删除班级：{}", ids);
         if (ids.size() == 1) {
             clazzService.deleteById(ids.get(0));

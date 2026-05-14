@@ -19,8 +19,13 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
        //注册自定义拦截器对象
         registry.addInterceptor(tokenInterceptor)
-                .addPathPatterns("/**");//设置拦截器拦截的请求路径（ /** 表示拦截所有请求）
-                //.excludePathPatterns("/login");设置拦截器不拦截的请求路径（/login）
+                .addPathPatterns("/**")//设置拦截器拦截的请求路径（ /** 表示拦截所有请求）
+                .excludePathPatterns("/login",
+                        "/test/redis",
+                        "/swagger-ui/index.html",
+                        "/swagger-ui/**",
+                        "/v3/api-docs",
+                        "/v3/api-docs/**");//设置拦截器不拦截的请求路径（/login）
 
     }
 }

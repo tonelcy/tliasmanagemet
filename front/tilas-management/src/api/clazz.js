@@ -42,6 +42,6 @@ export function deleteClazz(ids) {
   return request({
     url: '/clazzs',
     method: 'delete',
-    params: { ids }
+    data: ids
   })
 }
