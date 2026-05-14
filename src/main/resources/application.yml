@@ -1,5 +1,7 @@
 #springboot配置
 spring:
+  profiles:
+    active: vm
   application:
     name: tlias-web-management
   #mysql连接配置
@@ -8,37 +10,9 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 1234
-  #Redis配置
-  redis:
-    host: localhost
-    port: 6379
-    password:
-    database: 0
-    timeout: 10000ms
-    lettuce:
-      pool:
-        max-active: 20
-        max-wait: -1ms
-        max-idle: 10
-        min-idle: 5
-  #RabbitMQ配置
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
-    virtual-host: /
-    publisher-confirm-type: correlated
-    publisher-returns: true
-    listener:
-      simple:
-        prefetch: 1
-        acknowledge-mode: manual
-        concurrency: 3
-        max-concurrency: 10
   #Spring Cache配置
   cache:
-    type: redis
+    type: redis  # 启用 Redis 缓存
     redis:
       time-to-live: 3600000ms
       cache-null-values: false
@@ -61,3 +35,14 @@ aliyun:
     endpoint: https://oss-cn-beijing.aliyuncs.com
     bucketName: javaweb1-ai-01
     region: cn-beijing
+
+# SpringDoc OpenAPI 接口文档配置
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha

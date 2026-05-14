@@ -35,7 +35,7 @@ export function deleteStudent(ids) {
   return request({
     url: '/students',
     method: 'delete',
-    params: { ids }
+    data: ids
   })
 }
 

@@ -28,7 +28,7 @@ public class ClazzServiceImpl implements ClazzService {
     private ClazzMapper clazzMapper;
 
     @Override
-    @Cacheable(value = "clazz", key = "'page:' + #param.page + ':' + #param.pageSize")
+    @Cacheable(value = "clazz", key = "'page:' + #param.page + ':' + #param.pageSize + ':' + #param.name + ':' + #param.begin + ':' + #param.end")
     public PageResult<Clazz> page(ClazzQueryParam param) {
         log.info("分页查询班级，从数据库获取: page={}, pageSize={}", param.getPage(), param.getPageSize());
         PageHelper.startPage(param.getPage(), param.getPageSize());
@@ -38,7 +38,7 @@ public class ClazzServiceImpl implements ClazzService {
     }
 
     @Override
-    @Cacheable(value = "clazz", key = "#id")
+    @Cacheable(value = "clazz", key = "'id:' + #id")
     public Clazz getById(Integer id) {
         log.info("查询班级详情，从数据库获取: id={}", id);
         return clazzMapper.getById(id);
@@ -48,7 +48,7 @@ public class ClazzServiceImpl implements ClazzService {
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(value = "clazz", allEntries = true)
     public void save(Clazz clazz) {
-        log.info("新增班级，清除缓存: {}", clazz);
+        log.info("新增班级: {}", clazz);
         clazz.setCreateTime(LocalDateTime.now());
         clazz.setUpdateTime(LocalDateTime.now());
         clazzMapper.insert(clazz);
@@ -58,7 +58,7 @@ public class ClazzServiceImpl implements ClazzService {
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(value = "clazz", allEntries = true)
     public void update(Clazz clazz) {
-        log.info("更新班级，清除缓存: {}", clazz);
+        log.info("更新班级: {}", clazz);
         clazz.setUpdateTime(LocalDateTime.now());
         clazzMapper.update(clazz);
     }
@@ -67,7 +67,7 @@ public class ClazzServiceImpl implements ClazzService {
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(value = "clazz", allEntries = true)
     public void deleteById(Integer id) {
-        log.info("删除班级，清除缓存: id={}", id);
+        log.info("删除班级: id={}", id);
         clazzMapper.deleteById(id);
     }
 
@@ -75,12 +75,12 @@ public class ClazzServiceImpl implements ClazzService {
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(value = "clazz", allEntries = true)
     public void deleteByIds(List<Integer> ids) {
-        log.info("批量删除班级，清除缓存: ids={}", ids);
+        log.info("批量删除班级: ids={}", ids);
         clazzMapper.deleteByIds(ids);
     }
 
     @Override
-    @Cacheable(value = "clazz", key = "'all'")
+    @Cacheable(value = "clazz", key = "'listAll'")
     public List<Clazz> listAll() {
         log.info("查询所有班级，从数据库获取");
         return clazzMapper.findAll();

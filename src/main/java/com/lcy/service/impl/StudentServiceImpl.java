@@ -29,7 +29,7 @@ public class StudentServiceImpl implements StudentService {
     private StudentMapper studentMapper;
 
     @Override
-    @Cacheable(value = "student", key = "'page:' + #param.page + ':' + #param.pageSize")
+    @Cacheable(value = "student", key = "'page:' + #param.page + ':' + #param.pageSize + ':' + #param.name + ':' + #param.degree + ':' + #param.clazzId")
     public PageResult<Student> page(StudentQueryParam param) {
         log.info("分页查询学生，从数据库获取: page={}, pageSize={}", param.getPage(), param.getPageSize());
         PageHelper.startPage(param.getPage(), param.getPageSize());
@@ -39,7 +39,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    @Cacheable(value = "student", key = "#id")
+    @Cacheable(value = "student", key = "'id:' + #id")
     public Student getById(Integer id) {
         log.info("查询学生详情，从数据库获取: id={}", id);
         return studentMapper.getById(id);
@@ -49,7 +49,7 @@ public class StudentServiceImpl implements StudentService {
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(value = "student", allEntries = true)
     public void save(Student student) {
-        log.info("新增学生，清除缓存: {}", student);
+        log.info("新增学生: {}", student);
         student.setCreateTime(LocalDateTime.now());
         student.setUpdateTime(LocalDateTime.now());
         studentMapper.insert(student);
@@ -59,7 +59,7 @@ public class StudentServiceImpl implements StudentService {
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(value = "student", allEntries = true)
     public void update(Student student) {
-        log.info("更新学生，清除缓存: {}", student);
+        log.info("更新学生: {}", student);
         student.setUpdateTime(LocalDateTime.now());
         studentMapper.update(student);
     }
@@ -68,7 +68,7 @@ public class StudentServiceImpl implements StudentService {
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(value = "student", allEntries = true)
     public void deleteById(Integer id) {
-        log.info("删除学生，清除缓存: id={}", id);
+        log.info("删除学生: id={}", id);
         studentMapper.deleteById(id);
     }
 
@@ -76,7 +76,7 @@ public class StudentServiceImpl implements StudentService {
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(value = "student", allEntries = true)
     public void deleteByIds(List<Integer> ids) {
-        log.info("批量删除学生，清除缓存: ids={}", ids);
+        log.info("批量删除学生: ids={}", ids);
         studentMapper.deleteByIds(ids);
     }
 
@@ -86,28 +86,28 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    @Cacheable(value = "student", key = "'stat:gender'")
+    @Cacheable(value = "student", key = "'gender'")
     public List<Map> countStudentGender() {
         log.info("统计学生性别，从数据库获取");
         return studentMapper.countStudentGender();
     }
 
     @Override
-    @Cacheable(value = "student", key = "'stat:degree'")
+    @Cacheable(value = "student", key = "'degree'")
     public List<Map> countStudentDegree() {
         log.info("统计学生学历，从数据库获取");
         return studentMapper.countStudentDegree();
     }
 
     @Override
-    @Cacheable(value = "student", key = "'stat:college'")
+    @Cacheable(value = "student", key = "'college'")
     public List<Map> countStudentByCollege() {
         log.info("统计各学院学生，从数据库获取");
         return studentMapper.countStudentByCollege();
     }
 
     @Override
-    @Cacheable(value = "student", key = "'stat:clazz'")
+    @Cacheable(value = "student", key = "'clazz'")
     public List<Map> countStudentByClazz() {
         log.info("统计各班级学生，从数据库获取");
         return studentMapper.countStudentByClazz();

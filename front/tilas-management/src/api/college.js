@@ -34,7 +34,7 @@ export function deleteCollege(ids) {
   return request({
     url: '/colleges',
     method: 'delete',
-    params: { ids }
+    data: ids
   })
 }
 

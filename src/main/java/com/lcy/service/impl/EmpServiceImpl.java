@@ -41,11 +41,13 @@ public class EmpServiceImpl implements EmpService {
     private EmpLogMapper empLogMapper;
 
     @Override
+    @Cacheable(value = "emp", key = "'list'")
     public List<Emp> list() {
         return empMapper.list(null);
     }
 
-    @Cacheable(value = "emp", key = "'page:' + #empQueryParam.page + ':' + #empQueryParam.pageSize")
+    @Override
+    @Cacheable(value = "emp", key = "'page:' + #empQueryParam.page + ':' + #empQueryParam.pageSize + ':' + #empQueryParam.name + ':' + #empQueryParam.gender + ':' + #empQueryParam.begin + ':' + #empQueryParam.end")
     public PageResult<Emp> page(EmpQueryParam empQueryParam) {
         log.info("分页查询员工，从数据库获取: page={}, pageSize={}", empQueryParam.getPage(), empQueryParam.getPageSize());
         PageHelper.startPage(empQueryParam.getPage(), empQueryParam.getPageSize());
@@ -58,7 +60,7 @@ public class EmpServiceImpl implements EmpService {
     @Override
     @CacheEvict(value = "emp", allEntries = true)
     public void save(Emp emp) {
-        log.info("新增员工，清除缓存: {}", emp);
+        log.info("新增员工: {}", emp);
         try {
             emp.setCreateTime(LocalDateTime.now());
             emp.setUpdateTime(LocalDateTime.now());
@@ -81,14 +83,14 @@ public class EmpServiceImpl implements EmpService {
     @Override
     @CacheEvict(value = "emp", allEntries = true)
     public void deleteByIds(List<Integer> ids) {
-        log.info("删除员工，清除缓存: ids={}", ids);
+        log.info("删除员工: ids={}", ids);
         empMapper.deleteByIds(ids);
         empExprMapper.deleteByEmpIds(ids);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    @Cacheable(value = "emp", key = "'info:' + #id")
+    @Cacheable(value = "emp", key = "'id:' + #id")
     public Emp getInfo(Integer id) {
         log.info("查询员工详情，从数据库获取: id={}", id);
         return empMapper.getById(id);
@@ -98,7 +100,7 @@ public class EmpServiceImpl implements EmpService {
     @Override
     @CacheEvict(value = "emp", allEntries = true)
     public void update(Emp emp) {
-        log.info("更新员工，清除缓存: {}", emp);
+        log.info("更新员工: {}", emp);
         emp.setUpdateTime(LocalDateTime.now());
         empMapper.updateById(emp);
 

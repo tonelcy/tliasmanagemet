@@ -68,7 +68,7 @@ public class StudentController {
      * 删除
      */
     @DeleteMapping
-    public Result delete(@RequestParam List<Integer> ids) {
+    public Result delete(@RequestBody List<Integer> ids) {
         log.info("删除学生：{}", ids);
         if (ids.size() == 1) {
             studentService.deleteById(ids.get(0));

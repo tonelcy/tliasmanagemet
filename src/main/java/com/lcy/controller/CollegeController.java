@@ -64,7 +64,7 @@ public class CollegeController {
      * 删除
      */
     @DeleteMapping
-    public Result delete(@RequestParam List<Integer> ids) {
+    public Result delete(@RequestBody List<Integer> ids) {
         log.info("删除学院：{}", ids);
         if (ids.size() == 1) {
             collegeService.deleteById(ids.get(0));
